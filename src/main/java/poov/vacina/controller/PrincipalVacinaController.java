@@ -109,15 +109,46 @@ public class PrincipalVacinaController implements Initializable {
     }
 
     @FXML
-    void ButtonEditar(ActionEvent event) {
-        stageAuxiliar.setTitle("Editar de Vacina");
-        stageAuxiliar.showAndWait();
+    void ButtonEditar(ActionEvent event) throws SQLException {
+        if (principalTable.getSelectionModel().getSelectedItem() != null) {
+            vacina = principalTable.getSelectionModel().getSelectedItem();
+            controllerAuxiliar.recebendo(vacina, true);
+            stageAuxiliar.setTitle("Editar de Vacina");
+            stageAuxiliar.showAndWait();
+
+            principalTable.getItems().clear();
+            try {
+                factory.abrirConexao();
+                VacinaDAO dao = factory.getDAO(VacinaDAO.class);
+                vacinas = dao.findAll();
+                principalTable.getItems().addAll(vacinas);
+            } finally {
+                factory.fecharConexao();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Selecione uma Vacina");
+            alert.setTitle("Edição");
+            alert.setHeaderText("Sem Vacina para Editar");
+            alert.showAndWait();
+        }
     }
 
     @FXML
-    void ButtonIncluir(ActionEvent event) {
+    void ButtonIncluir(ActionEvent event) throws SQLException {
+        controllerAuxiliar.recebendo(new Vacina(), false);
         stageAuxiliar.setTitle("Incluir de Vacina");
         stageAuxiliar.showAndWait();
+
+        principalTable.getItems().clear();
+        try {
+            factory.abrirConexao();
+            VacinaDAO dao = factory.getDAO(VacinaDAO.class);
+            vacinas = dao.findAll();
+            principalTable.getItems().addAll(vacinas);
+        } finally {
+            factory.fecharConexao();
+        }
     }
 
     @FXML
