@@ -18,7 +18,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("principalVacina"), 640, 480);
+        scene = new Scene(loadFXML("principal"), 755, 600);
         stage.setTitle("Tela Principal");
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/poov/images/java.png")));
         stage.setScene(scene);

@@ -90,8 +90,8 @@ public class AuxiliarVacinaController {
             if (edit) {
                 dao.update(vacina);
             } else {
-                System.out.println(vacina);
-                // dao.create(vacina);
+                vacina.setCodigo(null);
+                dao.create(vacina);
             }
 
             factory.fecharConexao();
