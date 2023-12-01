@@ -29,7 +29,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import poov.vacina.model.Aplicacao;
 import poov.vacina.model.Pessoa;
 import poov.vacina.model.Situacao;
