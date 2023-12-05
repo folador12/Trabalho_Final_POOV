@@ -53,6 +53,14 @@ public class AuxiliarVacinaController {
             inputCodigo.setText(String.valueOf(vacina.getCodigo()));
             inputNome.setText(vacina.getNome());
             inputDesc.setText(vacina.getDescricao());
+
+            inputCodigo.setDisable(true);
+
+            inputCodigo.setVisible(true);
+            labelCodigo.setVisible(true);
+        } else {
+            inputCodigo.setVisible(false);
+            labelCodigo.setVisible(false);
         }
     }
 

@@ -5,6 +5,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -158,6 +159,9 @@ public class PrincipalController implements Initializable {
         });
         TablePessoa.setPlaceholder(new Label("Nenhuma pessoa cadastrada"));
         TablePessoa.getItems().addAll(pessoas);
+
+        verificarCodigo(CodPessoa);
+        verificarCodigo(CodVacina);
     }
 
     @FXML
@@ -240,97 +244,57 @@ public class PrincipalController implements Initializable {
 
     @FXML
     void PesquisarPessoa(ActionEvent event) {
-        if (CodPessoa.getText().isEmpty() && NomePessoa.getText().isEmpty() && CPFPessoa.getText().isEmpty()
-                && DataPickerApartirDe.getValue() == null && DataPickerAté.getValue() == null) {
-            TablePessoa.getItems().clear();
-            TablePessoa.getItems().addAll(pessoas);
-        } else {
-            if (!CodPessoa.getText().isEmpty()) {
-                TablePessoa.getItems().clear();
-                for (Pessoa pessoa : pessoas) {
-                    if (pessoa.getCodigo() == Long.parseLong(CodPessoa.getText())) {
-                        TablePessoa.getItems().add(pessoa);
-                    }
-                }
-            }
-            if (!NomePessoa.getText().isEmpty()) {
-                TablePessoa.getItems().clear();
-                for (Pessoa Pessoa : pessoas) {
-                    if (Pessoa.getNome().equals(NomePessoa.getText())) {
-                        TablePessoa.getItems().add(Pessoa);
-                    }
-                }
-            }
-            if (!CPFPessoa.getText().isEmpty()) {
-                TablePessoa.getItems().clear();
-                for (Pessoa Pessoa : pessoas) {
-                    if (Pessoa.getCpf().equals(CPFPessoa.getText())) {
-                        TablePessoa.getItems().add(Pessoa);
-                    }
-                }
+        List<Pessoa> resultados = new ArrayList<>(pessoas);
 
-            }
-            if (DataPickerApartirDe.getValue() != null) {
-                TablePessoa.getItems().clear();
-                for (Pessoa Pessoa : pessoas) {
-                    if (Pessoa.getCpf().equals(CPFPessoa.getText())) {
-                        TablePessoa.getItems().add(Pessoa);
-                    }
-                }
-            }
-            LocalDate dataApartirDe = DataPickerApartirDe.getValue();
-            LocalDate dataAte = DataPickerAté.getValue();
-            if (dataAte != null || dataApartirDe != null) {
-                TablePessoa.getItems().clear();
-                for (Pessoa pessoa : pessoas) {
-                    LocalDate dataNascimento = pessoa.getDataNascimento();
-
-                    if ((dataApartirDe == null || dataNascimento.isEqual(dataApartirDe)
-                            || dataNascimento.isAfter(dataApartirDe))
-                            && (dataAte == null || dataNascimento.isEqual(dataAte)
-                                    || dataNascimento.isBefore(dataAte))) {
-                        TablePessoa.getItems().add(pessoa);
-                    }
-                }
-            }
-
+        if (!CodPessoa.getText().isEmpty()) {
+            resultados.removeIf(pessoa -> pessoa.getCodigo() != Long.parseLong(CodPessoa.getText()));
         }
+
+        if (!NomePessoa.getText().isEmpty()) {
+            resultados.removeIf(pessoa -> !pessoa.getNome().equals(NomePessoa.getText()));
+        }
+
+        if (!CPFPessoa.getText().isEmpty()) {
+            resultados.removeIf(pessoa -> !pessoa.getCpf().equals(CPFPessoa.getText()));
+        }
+
+        LocalDate dataApartirDe = DataPickerApartirDe.getValue();
+        if (dataApartirDe != null) {
+            resultados.removeIf(pessoa -> {
+                LocalDate dataNascimento = pessoa.getDataNascimento();
+                return dataNascimento.isBefore(dataApartirDe) || dataNascimento.isEqual(dataApartirDe);
+            });
+        }
+
+        LocalDate dataAte = DataPickerAté.getValue();
+        if (dataAte != null) {
+            resultados.removeIf(pessoa -> {
+                LocalDate dataNascimento = pessoa.getDataNascimento();
+                return dataNascimento.isAfter(dataAte) || dataNascimento.isEqual(dataAte);
+            });
+        }
+
+        TablePessoa.getItems().setAll(resultados);
 
     }
 
     @FXML
     void PesquisarVacina(ActionEvent event) {
-        if (CodVacina.getText().isEmpty() && NomeVacina.getText().isEmpty() && DescricaoVacina.getText().isEmpty()) {
-            TableVacina.getItems().clear();
-            TableVacina.getItems().addAll(vacinas);
-        } else {
+        List<Vacina> resultados = new ArrayList<>(vacinas);
 
-            if (!CodVacina.getText().isEmpty()) {
-                TableVacina.getItems().clear();
-                for (Vacina vacina : vacinas) {
-                    if (vacina.getCodigo() == Long.parseLong(CodVacina.getText())) {
-                        TableVacina.getItems().add(vacina);
-                    }
-                }
-            }
-            if (!NomeVacina.getText().isEmpty()) {
-                TableVacina.getItems().clear();
-                for (Vacina vacina : vacinas) {
-                    if (vacina.getNome().equals(NomeVacina.getText())) {
-                        TableVacina.getItems().add(vacina);
-                    }
-                }
-            }
-            if (!DescricaoVacina.getText().isEmpty()) {
-                TableVacina.getItems().clear();
-                for (Vacina vacina : vacinas) {
-                    if (vacina.getDescricao().equals(DescricaoVacina.getText())) {
-                        TableVacina.getItems().add(vacina);
-                    }
-                }
-
-            }
+        if (!CodVacina.getText().isEmpty()) {
+            resultados.removeIf(vacina -> vacina.getCodigo() != Long.parseLong(CodVacina.getText()));
         }
+
+        if (!NomeVacina.getText().isEmpty()) {
+            resultados.removeIf(vacina -> !vacina.getNome().equals(NomeVacina.getText()));
+        }
+
+        if (!DescricaoVacina.getText().isEmpty()) {
+            resultados.removeIf(vacina -> !vacina.getDescricao().equals(DescricaoVacina.getText()));
+        }
+
+        TableVacina.getItems().setAll(resultados);
     }
 
     @FXML
@@ -367,6 +331,15 @@ public class PrincipalController implements Initializable {
             alert.setHeaderText("Sem Vacina para Remover");
             alert.showAndWait();
         }
+    }
+
+    private void verificarCodigo(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                // If the new input is not numeric, replace it with an empty string
+                textField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
     }
 
 }
