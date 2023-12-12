@@ -251,11 +251,11 @@ public class PrincipalController implements Initializable {
         }
 
         if (!NomePessoa.getText().isEmpty()) {
-            resultados.removeIf(pessoa -> !pessoa.getNome().equals(NomePessoa.getText()));
+            resultados.removeIf(pessoa -> !pessoa.getNome().toLowerCase().contains(NomePessoa.getText()));
         }
 
         if (!CPFPessoa.getText().isEmpty()) {
-            resultados.removeIf(pessoa -> !pessoa.getCpf().equals(CPFPessoa.getText()));
+            resultados.removeIf(pessoa -> !pessoa.getCpf().toLowerCase().contains(CPFPessoa.getText()));
         }
 
         LocalDate dataApartirDe = DataPickerApartirDe.getValue();
@@ -287,11 +287,11 @@ public class PrincipalController implements Initializable {
         }
 
         if (!NomeVacina.getText().isEmpty()) {
-            resultados.removeIf(vacina -> !vacina.getNome().equals(NomeVacina.getText()));
+            resultados.removeIf(vacina -> !vacina.getNome().toLowerCase().contains(NomeVacina.getText()));
         }
 
         if (!DescricaoVacina.getText().isEmpty()) {
-            resultados.removeIf(vacina -> !vacina.getDescricao().equals(DescricaoVacina.getText()));
+            resultados.removeIf(vacina -> !vacina.getDescricao().toLowerCase().contains(DescricaoVacina.getText()));
         }
 
         TableVacina.getItems().setAll(resultados);
